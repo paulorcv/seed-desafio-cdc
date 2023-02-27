@@ -7,8 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -19,12 +17,13 @@ import java.util.Map;
 @Validated
 public class AuthorController {
 
-    @Autowired AuthorService service;
+    @Autowired
+    AuthorRepository repository;
 
     @PostMapping(value="/api/author")
     @Transactional
     public void create(@Valid @RequestBody NewAuthorRequest form) {
-        service.create(form.build());
+        repository.save(form.build());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
