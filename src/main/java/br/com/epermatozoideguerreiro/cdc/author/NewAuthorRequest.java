@@ -2,13 +2,11 @@ package br.com.epermatozoideguerreiro.cdc.author;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-public class NewAuthorForm {
+public class NewAuthorRequest {
 
     @NotBlank
-    @NotEmpty
     private String name;
 
     @NotBlank

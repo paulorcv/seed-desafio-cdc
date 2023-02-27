@@ -1,5 +1,6 @@
 package br.com.epermatozoideguerreiro.cdc.author;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -16,16 +17,14 @@ import java.util.Map;
 
 @RestController
 @Validated
-public class CrudAuthorController {
+public class AuthorController {
 
-    @PersistenceContext
-    EntityManager manager;
+    @Autowired AuthorService service;
 
     @PostMapping(value="/api/author")
     @Transactional
-    public void create(@Valid @RequestBody NewAuthorForm form) {
-        Author author = form.build();
-        manager.persist(author);
+    public void create(@Valid @RequestBody NewAuthorRequest form) {
+        service.create(form.build());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
