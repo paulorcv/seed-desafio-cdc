@@ -20,7 +20,7 @@ public class AuthorController {
     @Autowired
     AuthorRepository repository;
 
-    @PostMapping(value="/api/author")
+    @PostMapping(value = "/api/author")
     @Transactional
     public void create(@Valid @RequestBody NewAuthorRequest form) {
         repository.save(form.build());
