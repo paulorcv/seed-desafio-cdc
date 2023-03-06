@@ -41,7 +41,7 @@ public class NewAuthorRequest {
         this.description = description;
     }
 
-    public Author build() {
+    public Author toModel() {
         return new Author(name, email, description);
     }
 }
