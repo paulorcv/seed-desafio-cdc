@@ -22,8 +22,8 @@ public class AuthorController {
 
     @PostMapping(value = "/api/author")
     @Transactional
-    public void create(@Valid @RequestBody NewAuthorRequest form) {
-        repository.save(form.build());
+    public void create(@Valid @RequestBody NewAuthorRequest request) {
+        repository.save(request.build());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
