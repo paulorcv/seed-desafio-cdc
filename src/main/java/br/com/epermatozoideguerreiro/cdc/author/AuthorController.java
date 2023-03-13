@@ -22,7 +22,12 @@ public class AuthorController {
 
     @PostMapping(value = "/api/author")
     @Transactional
-    public void create(@Valid @RequestBody NewAuthorRequest request) {
+    public void create(@Valid @RequestBody NewAuthorRequest request) throws AuthorAlreadyExistsException {
+
+        Author author = repository.findByEmail(request.getEmail());
+
+        if(author!=null) throw new AuthorAlreadyExistsException("Autor já existe com este e-mail cadastrado");
+
         repository.save(request.toModel());
     }
 
@@ -36,6 +41,15 @@ public class AuthorController {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
+        return errors;
+    }
+
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler(AuthorAlreadyExistsException.class)
+    public Map<String, String> handleAuthorAlreadyExistsException(
+            AuthorAlreadyExistsException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("Cadastro de autor", ex.getMessage());
         return errors;
     }
 }

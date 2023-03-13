@@ -17,7 +17,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,7 +33,7 @@ public class AuthorControllerTest {
     private MockMvc mvc;
 
     @MockBean
-    AuthorRepository service;
+    AuthorRepository repository;
 
     @BeforeEach
     public void setup() {
@@ -44,7 +43,7 @@ public class AuthorControllerTest {
 
         Author author = new Author("teste", "teste@teste.com", "teste");
 
-        Mockito.when(service.save(Mockito.any(Author.class)))
+        Mockito.when(repository.save(Mockito.any(Author.class)))
                 .thenReturn(author);
     }
 
@@ -112,6 +111,27 @@ public class AuthorControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isBadRequest());
 
+    }
+
+    @Test
+    void createDuplicateAuthor() throws Exception {
+
+        Author author = new Author("teste", "teste@teste.com", "Autor que já existe");
+
+        Mockito.when(repository.findByEmail(Mockito.anyString()))
+                .thenReturn(author);
+
+        NewAuthorRequest form = new NewAuthorRequest();
+        form.setName("Teste");
+        form.setEmail("teste@teste.com");
+        form.setDescription("Teste");
+
+            mvc.perform(
+                    post("/api/author")
+                            .content(asJsonString(form))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .accept(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isNotAcceptable());
     }
 
     public static String asJsonString(final Object obj) {

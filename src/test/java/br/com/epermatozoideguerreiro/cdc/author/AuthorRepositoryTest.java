@@ -32,4 +32,18 @@ public class AuthorRepositoryTest {
 
     }
 
+
+    @Test
+    public void findByEmailTest(){
+
+        Author author = new Author("teste", "teste@teste.com", "teste");
+
+        Mockito.when(repository.findByEmail(Mockito.anyString()))
+                .thenReturn(author);
+
+        Author returnedAuthor = repository.findByEmail(author.getEmail());
+        Assertions.assertEquals(author.getName(), returnedAuthor.getName());
+        Assertions.assertEquals(author.getDescription(), returnedAuthor.getDescription());
+
+    }
 }
