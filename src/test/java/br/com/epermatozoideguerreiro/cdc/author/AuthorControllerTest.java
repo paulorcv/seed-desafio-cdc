@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -119,7 +121,7 @@ public class AuthorControllerTest {
         Author author = new Author("teste", "teste@teste.com", "Autor que já existe");
 
         Mockito.when(repository.findByEmail(Mockito.anyString()))
-                .thenReturn(author);
+                .thenReturn(Optional.of(author));
 
         NewAuthorRequest form = new NewAuthorRequest();
         form.setName("Teste");

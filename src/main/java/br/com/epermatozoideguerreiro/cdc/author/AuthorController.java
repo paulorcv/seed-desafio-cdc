@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 @RestController
@@ -24,9 +25,9 @@ public class AuthorController {
     @Transactional
     public void create(@Valid @RequestBody NewAuthorRequest request) throws AuthorAlreadyExistsException {
 
-        Author author = repository.findByEmail(request.getEmail());
+        Optional<Author> author = repository.findByEmail(request.getEmail());
 
-        if(author!=null) throw new AuthorAlreadyExistsException("Autor já existe com este e-mail cadastrado");
+        if(author.isPresent()) throw new AuthorAlreadyExistsException("Autor já existe com este e-mail cadastrado");
 
         repository.save(request.toModel());
     }

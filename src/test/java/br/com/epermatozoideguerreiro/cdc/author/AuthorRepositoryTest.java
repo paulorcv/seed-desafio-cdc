@@ -9,6 +9,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Optional;
+
 import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -39,11 +41,11 @@ public class AuthorRepositoryTest {
         Author author = new Author("teste", "teste@teste.com", "teste");
 
         Mockito.when(repository.findByEmail(Mockito.anyString()))
-                .thenReturn(author);
+                .thenReturn(Optional.of(author));
 
-        Author returnedAuthor = repository.findByEmail(author.getEmail());
-        Assertions.assertEquals(author.getName(), returnedAuthor.getName());
-        Assertions.assertEquals(author.getDescription(), returnedAuthor.getDescription());
+        Optional<Author> returnedAuthor = repository.findByEmail(author.getEmail());
+        Assertions.assertEquals(author.getName(), returnedAuthor.get().getName());
+        Assertions.assertEquals(author.getDescription(), returnedAuthor.get().getDescription());
 
     }
 }
