@@ -16,6 +16,15 @@ public class NewAuthorRequest {
     @NotBlank
     @Size(max = 400)
     private String description;
+    public NewAuthorRequest() {
+
+    }
+
+    public NewAuthorRequest(String name, String email, String description) {
+        this.name = name;
+        this.email = email;
+        this.description = description;
+    }
 
     public String getName() {
         return name;

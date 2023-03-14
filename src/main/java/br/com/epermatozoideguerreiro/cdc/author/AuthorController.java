@@ -5,13 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 
 @RestController
@@ -19,17 +19,19 @@ import java.util.Optional;
 public class AuthorController {
 
     @Autowired
-    AuthorRepository repository;
+    private AuthorRepository authorRepository;
+    @Autowired
+    private AuthorAlreadyExistsValidator authorAlreadyExistsValidator;
+
+    @InitBinder
+    public void init(WebDataBinder binder) {
+        binder.addValidators(authorAlreadyExistsValidator);
+    }
 
     @PostMapping(value = "/api/author")
     @Transactional
     public void create(@Valid @RequestBody NewAuthorRequest request) throws AuthorAlreadyExistsException {
-
-        Optional<Author> author = repository.findByEmail(request.getEmail());
-
-        if(author.isPresent()) throw new AuthorAlreadyExistsException("Autor já existe com este e-mail cadastrado");
-
-        repository.save(request.toModel());
+        authorRepository.save(request.toModel());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
