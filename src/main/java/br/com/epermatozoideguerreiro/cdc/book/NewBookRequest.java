@@ -2,8 +2,8 @@ package br.com.epermatozoideguerreiro.cdc.book;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
-import javax.persistence.EntityManager;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -16,7 +16,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 import br.com.epermatozoideguerreiro.cdc.author.Author;
+import br.com.epermatozoideguerreiro.cdc.author.AuthorRepository;
 import br.com.epermatozoideguerreiro.cdc.category.Category;
+import br.com.epermatozoideguerreiro.cdc.category.CategoryRepository;
 
 public class NewBookRequest {
 
@@ -145,15 +147,15 @@ public class NewBookRequest {
         this.idCategory = idCategory;
     }
 
-    public Book toModel(EntityManager manager) {
+    public Book toModel(AuthorRepository authorRepository, CategoryRepository categoryRepository) {
 
         @NotNull
-        Author author = manager.find(Author.class, idAuthor);
+        Optional<Author> author = authorRepository.findById(idAuthor);
         @NotNull
-        Category category = manager.find(Category.class, idCategory);
+        Optional<Category> category = categoryRepository.findById(idCategory);
 
-        Assert.state(author != null, "Não existe o author com o id: " + idAuthor + " no banco");
-        Assert.state(category != null, "Não existe categoria com o id: " + idCategory + " no banco");
+        Assert.state(author.isPresent(), "Não existe o author com o id: " + idAuthor + " no banco");
+        Assert.state(category.isPresent(), "Não existe categoria com o id: " + idCategory + " no banco");
 
         return new Book(
                 title,
@@ -163,8 +165,8 @@ public class NewBookRequest {
                 pages,
                 isbn,
                 publicationDate,
-                author,
-                category);
+                author.get(),
+                category.get());
     }
 
 }

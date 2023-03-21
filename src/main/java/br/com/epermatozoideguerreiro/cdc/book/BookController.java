@@ -1,7 +1,5 @@
 package br.com.epermatozoideguerreiro.cdc.book;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -13,6 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.epermatozoideguerreiro.cdc.author.AuthorRepository;
+import br.com.epermatozoideguerreiro.cdc.category.CategoryRepository;
+
 
 @RestController
 @Validated
@@ -20,11 +21,15 @@ public class BookController {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private AuthorRepository authorRepository;
+    
+    @Autowired 
+    private CategoryRepository categoryRepository;
+
     @Autowired
     private BookAlreadyExistsValidator bookAlreadyExistsValidator;
-
-    @PersistenceContext
-    EntityManager manager;
 
     @InitBinder
     public void init(WebDataBinder binder) {
@@ -34,7 +39,7 @@ public class BookController {
     @PostMapping(value = "/api/book")
     @Transactional
     public void create(@Valid @RequestBody NewBookRequest request) {
-        bookRepository.save(request.toModel(manager));
+        bookRepository.save(request.toModel(authorRepository, categoryRepository));
     }
 
 }
