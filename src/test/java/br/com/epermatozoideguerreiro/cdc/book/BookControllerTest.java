@@ -1,10 +1,16 @@
 package br.com.epermatozoideguerreiro.cdc.book;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +68,7 @@ class BookControllerTest {
 
         Mockito.when(bookRepository.save(Mockito.any(Book.class)))
                 .thenReturn(book);
-        
+
         Mockito.when(authorRepository.findById(Mockito.any())).thenReturn(Optional.of(newAuthor()));
         Mockito.when(categoryRepository.findById(Mockito.any())).thenReturn(Optional.of(newCategory()));
 
@@ -109,8 +115,27 @@ class BookControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-    }    
+    }
 
+    @Test
+    void listBooksSucess() throws Exception {
+
+        Category category = newCategory();
+        Author author = new Author();
+        Book book1 = newBook(author, category);
+        Book book2 = newBook(author, category);
+        List<Book> listBooks = Arrays.asList(book1, book2);
+
+        when(bookRepository.findAll()).thenReturn(listBooks);
+
+
+        mvc.perform(
+                get("/api/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+    }
 
     @Test
     void createBookWithPublicationDateInThePast() throws Exception {
@@ -124,48 +149,49 @@ class BookControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-    }            
+    }
 
     public static String asJsonString(final Object obj) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());            
+            objectMapper.registerModule(new JavaTimeModule());
             return objectMapper.writeValueAsString(obj);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-
     private Book newBook(Author author, Category category) {
-        return new Book("titulo", "descrição", "sumário", new BigDecimal(21), 110, "123", LocalDate.of(2110, 10, 10), author, category);
+        return new Book("titulo", "descrição", "sumário", new BigDecimal(21), 110, "123", LocalDate.of(2110, 10, 10),
+                author, category);
     }
-
 
     private Category newCategory() {
         return new Category("teste");
     }
-
 
     private Author newAuthor() {
         return new Author("autor", "teste@teste.com", "descrição");
     }
 
     private NewBookRequest newBookRequest() {
-        return new NewBookRequest("titulo", "descrição", "sumário", new BigDecimal(21), 110, "2321", LocalDate.of(2100, 10, 10), 12L, 12L);
+        return new NewBookRequest("titulo", "descrição", "sumário", new BigDecimal(21), 110, "2321",
+                LocalDate.of(2100, 10, 10), 12L, 12L);
     }
 
     private NewBookRequest newBookInvalidPagesRequest() {
-        return new NewBookRequest("titulo", "descrição", "sumário", new BigDecimal(21), 19, "2321", LocalDate.of(2100, 10, 10), 12L, 12L);
-    }    
-
+        return new NewBookRequest("titulo", "descrição", "sumário", new BigDecimal(21), 19, "2321",
+                LocalDate.of(2100, 10, 10), 12L, 12L);
+    }
 
     private NewBookRequest newBookInvalidTitleRequest() {
-        return new NewBookRequest("", "descrição", "sumário", new BigDecimal(21), 19, "2321", LocalDate.of(2100, 10, 10), 12L, 12L);
-    }       
-    
+        return new NewBookRequest("", "descrição", "sumário", new BigDecimal(21), 19, "2321",
+                LocalDate.of(2100, 10, 10), 12L, 12L);
+    }
+
     private NewBookRequest newBookInvalidPublicationDateRequest() {
-        return new NewBookRequest("", "descrição", "sumário", new BigDecimal(21), 19, "2321", LocalDate.of(2020, 10, 10), 12L, 12L);
-    }       
+        return new NewBookRequest("", "descrição", "sumário", new BigDecimal(21), 19, "2321",
+                LocalDate.of(2020, 10, 10), 12L, 12L);
+    }
 
 }
