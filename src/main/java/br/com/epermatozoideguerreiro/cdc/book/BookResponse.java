@@ -3,9 +3,6 @@ package br.com.epermatozoideguerreiro.cdc.book;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import br.com.epermatozoideguerreiro.cdc.author.AuthorResponse;
-import br.com.epermatozoideguerreiro.cdc.category.CategoryResponse;
-
 public class BookResponse {
 
     private Long id;
@@ -16,8 +13,8 @@ public class BookResponse {
     private int pages;
     private String isbn;
     private LocalDate publicationDate;
-    private AuthorResponse author;
-    private CategoryResponse category;
+    private BookAuthorResponse author;
+    private BookCategoryResponse category;
 
     public BookResponse(Book book) {
         this.id = book.getId();
@@ -28,8 +25,8 @@ public class BookResponse {
         this.pages = book.getPages();
         this.isbn = book.getIsbn();
         this.publicationDate = book.getPublicationDate();
-        this.author = new AuthorResponse(book.getAuthor());
-        this.category = new CategoryResponse(book.getCategory());
+        this.author = new BookAuthorResponse(book.getAuthor());
+        this.category = new BookCategoryResponse(book.getCategory());
     }
 
     public Long getId() {
@@ -64,11 +61,11 @@ public class BookResponse {
         return publicationDate;
     }
 
-    public AuthorResponse getAuthor() {
+    public BookAuthorResponse getAuthor() {
         return author;
     }
 
-    public CategoryResponse getCategory() {
+    public BookCategoryResponse getCategory() {
         return category;
     }
 

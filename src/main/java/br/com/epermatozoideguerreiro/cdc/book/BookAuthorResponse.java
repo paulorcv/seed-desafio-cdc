@@ -1,13 +1,15 @@
-package br.com.epermatozoideguerreiro.cdc.author;
+package br.com.epermatozoideguerreiro.cdc.book;
 
-public class AuthorResponse {
+import br.com.epermatozoideguerreiro.cdc.author.Author;
+
+public class BookAuthorResponse {
 
     private Long id;
     private String name;
     private String email;
     private String description;
 
-    public AuthorResponse(Author author) {
+    public BookAuthorResponse(Author author) {
         this.id = author.getId();
         this.name = author.getName();
         this.email = author.getEmail();

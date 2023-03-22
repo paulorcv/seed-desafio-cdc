@@ -1,11 +1,13 @@
-package br.com.epermatozoideguerreiro.cdc.category;
+package br.com.epermatozoideguerreiro.cdc.book;
 
-public class CategoryResponse {
+import br.com.epermatozoideguerreiro.cdc.category.Category;
+
+public class BookCategoryResponse {
 
     private Long id;
     private String name;
 
-    public CategoryResponse(Category category) {
+    public BookCategoryResponse(Category category) {
         this.id = category.getId();
         this.name = category.getName();
     }
