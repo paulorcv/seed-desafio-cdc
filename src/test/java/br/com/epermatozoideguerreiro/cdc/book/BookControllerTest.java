@@ -174,7 +174,7 @@ class BookControllerTest {
         when(bookRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(book));
 
         mvc.perform(
-                get("/api/book/123")
+                get("/api/books/123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -185,7 +185,7 @@ class BookControllerTest {
         when(bookRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
         mvc.perform(
-                get("/api/book/123")
+                get("/api/books/123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
