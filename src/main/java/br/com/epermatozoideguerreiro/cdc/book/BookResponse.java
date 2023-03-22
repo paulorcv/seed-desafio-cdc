@@ -20,6 +20,7 @@ public class BookResponse {
     private CategoryResponse category;
 
     public BookResponse(Book book) {
+        this.id = book.getId();
         this.title = book.getTitle();
         this.description = book.getDescription();
         this.summary = book.getSummary();

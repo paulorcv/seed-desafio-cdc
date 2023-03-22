@@ -64,7 +64,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/api/book/{id}")
-    public ResponseEntity<BookResponse> getBook(@PathVariable Long id) {
+    public ResponseEntity<BookResponse> getBook(@PathVariable("id") Long id) {
         Optional<Book> book = bookRepository.findById(id);
 
         if (book.isEmpty()) {
