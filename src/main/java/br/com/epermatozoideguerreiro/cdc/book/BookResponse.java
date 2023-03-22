@@ -1,7 +1,7 @@
 package br.com.epermatozoideguerreiro.cdc.book;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class BookResponse {
 
@@ -12,7 +12,7 @@ public class BookResponse {
     private BigDecimal price;
     private int pages;
     private String isbn;
-    private LocalDate publicationDate;
+    private String publicationDate;
     private BookAuthorResponse author;
     private BookCategoryResponse category;
 
@@ -24,7 +24,7 @@ public class BookResponse {
         this.price = book.getPrice();
         this.pages = book.getPages();
         this.isbn = book.getIsbn();
-        this.publicationDate = book.getPublicationDate();
+        this.publicationDate = book.getPublicationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         this.author = new BookAuthorResponse(book.getAuthor());
         this.category = new BookCategoryResponse(book.getCategory());
     }
@@ -57,7 +57,7 @@ public class BookResponse {
         return isbn;
     }
 
-    public LocalDate getPublicationDate() {
+    public String getPublicationDate() {
         return publicationDate;
     }
 
