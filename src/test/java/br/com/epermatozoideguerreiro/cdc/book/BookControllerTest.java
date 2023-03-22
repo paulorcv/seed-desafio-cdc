@@ -1,14 +1,13 @@
 package br.com.epermatozoideguerreiro.cdc.book;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -117,25 +116,6 @@ class BookControllerTest {
 
     }
 
-    @Test
-    void listBooksSucess() throws Exception {
-
-        Category category = newCategory();
-        Author author = new Author();
-        Book book1 = newBook(author, category);
-        Book book2 = newBook(author, category);
-        List<Book> listBooks = Arrays.asList(book1, book2);
-
-        when(bookRepository.findAll()).thenReturn(listBooks);
-
-
-        mvc.perform(
-                get("/api/books")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-    }
 
     @Test
     void createBookWithPublicationDateInThePast() throws Exception {
@@ -149,7 +129,68 @@ class BookControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
+    }    
+
+    @Test
+    void listBooksSucess() throws Exception {
+
+        Category category = newCategory();
+        Author author = new Author();
+        Book book1 = newBook(author, category);
+        Book book2 = newBook(author, category);
+        List<Book> listBooks = Arrays.asList(book1, book2);
+
+        when(bookRepository.findAll()).thenReturn(listBooks);
+
+        mvc.perform(
+                get("/api/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
     }
+
+    @Test
+    void listBooksEmpyty() throws Exception {
+
+        List<Book> listBooks = new ArrayList<Book>();
+
+        when(bookRepository.findAll()).thenReturn(listBooks);
+
+        mvc.perform(
+                get("/api/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }    
+
+
+    @Test
+    void getBookSucess() throws Exception {
+        Category category = newCategory();
+        Author author = newAuthor();
+        Book book = newBook(author, category);
+
+        when(bookRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(book));
+
+        mvc.perform(
+                get("/api/book/123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }  
+
+    @Test
+    void getBookNofFound() throws Exception {
+        when(bookRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
+        mvc.perform(
+                get("/api/book/123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    } 
+    
 
     public static String asJsonString(final Object obj) {
         try {
