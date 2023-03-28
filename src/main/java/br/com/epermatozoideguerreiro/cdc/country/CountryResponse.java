@@ -1,13 +1,18 @@
 package br.com.epermatozoideguerreiro.cdc.country;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class CountryResponse {
 
     private String name;
     private Long id;
+    private List<CountryStateResponse> states;
 
     public CountryResponse(Country country) {
         this.name = country.getName();
         this.id = country.getId();
+        this.states = country.getStates().stream().map(s -> new CountryStateResponse(s)).collect(Collectors.toList());
     }
 
     public String getName() {
@@ -18,6 +23,10 @@ public class CountryResponse {
         return id;
     }
 
-    
-    
+    public List<CountryStateResponse> getStates() {
+        return states;
+    }
+
+
+
 }
