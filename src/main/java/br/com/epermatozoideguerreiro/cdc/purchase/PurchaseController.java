@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.epermatozoideguerreiro.cdc.country.CountryRepository;
-import br.com.epermatozoideguerreiro.cdc.shared.DocumentCpfCnpjValidator;
 import br.com.epermatozoideguerreiro.cdc.state.StateRepository;
 
 @RestController
@@ -29,9 +28,8 @@ public class PurchaseController {
 
     @InitBinder
     public void init(WebDataBinder binder) {
-        binder.addValidators(new DocumentCpfCnpjValidator(),
-        stateBelongsToCountryValidator);
-            }
+        binder.addValidators(stateBelongsToCountryValidator);
+    }
 
     @PostMapping(value = "/api/purchases")
     public String create(@Valid @RequestBody NewPurchaseRequest request) {

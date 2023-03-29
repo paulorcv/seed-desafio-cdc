@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 
 import br.com.epermatozoideguerreiro.cdc.country.Country;
 import br.com.epermatozoideguerreiro.cdc.country.CountryRepository;
+import br.com.epermatozoideguerreiro.cdc.shared.Documento;
 import br.com.epermatozoideguerreiro.cdc.state.State;
 import br.com.epermatozoideguerreiro.cdc.state.StateRepository;
 
@@ -28,6 +29,7 @@ public class NewPurchaseRequest {
     private String lastName;
 
     @NotBlank
+    @Documento
     private String document;
 
     @NotBlank
@@ -185,20 +187,6 @@ public class NewPurchaseRequest {
 
     public void setCep(String cep) {
         this.cep = cep;
-    }
-
-    public boolean isValidDocument() {
-
-        Assert.hasLength(document, "documento não preenchido");
-
-        CPFValidator cpfValidator = new CPFValidator();
-        cpfValidator.initialize(null);
-
-        CNPJValidator cnpjValidator = new CNPJValidator();
-        cnpjValidator.initialize(null);
-
-        return cpfValidator.isValid(document, null) || cnpjValidator.isValid(document, null);
-
     }
 
 }

@@ -5,6 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import br.com.epermatozoideguerreiro.cdc.country.Country;
+import br.com.epermatozoideguerreiro.cdc.shared.Documento;
 import br.com.epermatozoideguerreiro.cdc.state.State;
 
 public class Purchase {
@@ -20,6 +21,7 @@ public class Purchase {
     private String lastName;
 
     @NotBlank
+    @Documento
     private String document;
 
     @NotBlank
