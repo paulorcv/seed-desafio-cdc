@@ -1,5 +1,6 @@
 package br.com.epermatozoideguerreiro.cdc.purchase;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.epermatozoideguerreiro.cdc.book.BookRepository;
 import br.com.epermatozoideguerreiro.cdc.country.CountryRepository;
 import br.com.epermatozoideguerreiro.cdc.state.StateRepository;
 
@@ -24,16 +26,26 @@ public class PurchaseController {
     StateRepository stateRepository;
 
     @Autowired
+    PurchaseRepository purchaseRepository;
+
+    @Autowired
+    BookRepository bookRepository;
+
+    @Autowired
     StateBelongsToCountryValidator stateBelongsToCountryValidator;
+
+    @Autowired
+    ItemsOrderValidator itemsOrderValidator;
 
     @InitBinder
     public void init(WebDataBinder binder) {
-        binder.addValidators(stateBelongsToCountryValidator);
+        binder.addValidators(stateBelongsToCountryValidator, itemsOrderValidator);
     }
 
     @PostMapping(value = "/api/purchases")
-    public String create(@Valid @RequestBody NewPurchaseRequest request) {
-        return request.toModel(countryRepository, stateRepository).toString();
+    @Transactional
+    public void create(@Valid @RequestBody NewPurchaseRequest request) {
+        purchaseRepository.save(request.toModel(countryRepository, stateRepository, bookRepository));
     }
 
 }

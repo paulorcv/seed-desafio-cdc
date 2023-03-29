@@ -1,15 +1,19 @@
 package br.com.epermatozoideguerreiro.cdc.purchase;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.internal.constraintvalidators.hv.br.CNPJValidator;
-import org.hibernate.validator.internal.constraintvalidators.hv.br.CPFValidator;
 import org.springframework.util.Assert;
 
+import br.com.epermatozoideguerreiro.cdc.book.BookRepository;
 import br.com.epermatozoideguerreiro.cdc.country.Country;
 import br.com.epermatozoideguerreiro.cdc.country.CountryRepository;
 import br.com.epermatozoideguerreiro.cdc.shared.Documento;
@@ -52,12 +56,19 @@ public class NewPurchaseRequest {
     @NotBlank
     private String cep;
 
+    @NotNull
+    private BigDecimal total;
+
+    @NotEmpty
+    private List<@Valid ItemOrderRequest> itemsOrder;
+
     public NewPurchaseRequest() {
     }
 
     public NewPurchaseRequest(@NotBlank @Email String email, @NotBlank String name, @NotBlank String lastName,
-            @NotBlank String document, @NotBlank String address, @NotBlank String complement, @NotBlank String city,
-            @NotNull Long idCountry, Long idState, @NotBlank String phoneNumber, @NotBlank String cep) {
+            @NotBlank @Documento String document, @NotBlank String address, @NotBlank String complement,
+            @NotBlank String city, @NotNull Long idCountry, Long idState, @NotBlank String phoneNumber,
+            @NotBlank String cep, @NotNull BigDecimal total, @NotEmpty List<@Valid ItemOrderRequest> itemsOrder) {
         this.email = email;
         this.name = name;
         this.lastName = lastName;
@@ -69,9 +80,12 @@ public class NewPurchaseRequest {
         this.idState = idState;
         this.phoneNumber = phoneNumber;
         this.cep = cep;
+        this.total = total;
+        this.itemsOrder = itemsOrder;
     }
 
-    public Purchase toModel(CountryRepository countryRepository, StateRepository stateRepository) {
+    public Purchase toModel(CountryRepository countryRepository, StateRepository stateRepository,
+            BookRepository bookRepository) {
 
         @NotNull
         Optional<Country> countryOptional = countryRepository.findById(idCountry);
@@ -86,6 +100,13 @@ public class NewPurchaseRequest {
             state = stateOptional.get();
         }
 
+        List<ItemOrder> itemsOrderModel = null;
+
+        if (!itemsOrder.isEmpty()) {
+            itemsOrderModel = itemsOrder.stream().map(item -> item.toModel(bookRepository))
+                    .collect(Collectors.toList());
+        }
+
         return new Purchase(
                 email,
                 name,
@@ -97,7 +118,9 @@ public class NewPurchaseRequest {
                 country,
                 state,
                 phoneNumber,
-                cep);
+                cep,
+                total,
+                itemsOrderModel);
 
     }
 
@@ -187,6 +210,22 @@ public class NewPurchaseRequest {
 
     public void setCep(String cep) {
         this.cep = cep;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public List<ItemOrderRequest> getItemsOrder() {
+        return itemsOrder;
+    }
+
+    public void setItemsOrder(List<ItemOrderRequest> itemsOrder) {
+        this.itemsOrder = itemsOrder;
     }
 
 }

@@ -2,9 +2,13 @@ package br.com.epermatozoideguerreiro.cdc.purchase;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,12 +79,23 @@ public class StateBelongsToCountryValidatorTest {
 
     private NewPurchaseRequest newPurchaseRequestWithState() {
         return new NewPurchaseRequest("teste@teste.com", "Nome de teste", "Sobrenome", "04951442663",
-                "endereço qualquer", "complemento qualquer", "Cidade Qualquer", 1L, 1L, "123113131", "313131");
+                "endereço qualquer", "complemento qualquer", "Cidade Qualquer", 1L, 1L, "123113131", "313131", BigDecimal.valueOf(10), newItemsOrderRequests());
+    }
+
+    private @NotEmpty List<@Valid ItemOrderRequest> newItemsOrderRequests() {
+        List<ItemOrderRequest> items = new ArrayList<ItemOrderRequest>();
+        items.add(newItemOrder());
+        items.add(newItemOrder());
+        return items;
+    }
+
+    private ItemOrderRequest newItemOrder() {
+        return new ItemOrderRequest(1L, 1);
     }
 
     private NewPurchaseRequest newPurchaseRequestWithoutState() {
         return new NewPurchaseRequest("teste@teste.com", "Nome de teste", "Sobrenome", "04951442663",
-                "endereço qualquer", "complemento qualquer", "Cidade Qualquer", 1L, null, "123113131", "313131");
+                "endereço qualquer", "complemento qualquer", "Cidade Qualquer", 1L, null, "123113131", "313131", BigDecimal.valueOf(10), newItemsOrderRequests());
     }
 
     private Country newCountry() {
