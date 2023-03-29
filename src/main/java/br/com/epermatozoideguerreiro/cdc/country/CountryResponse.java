@@ -12,7 +12,7 @@ public class CountryResponse {
     public CountryResponse(Country country) {
         this.name = country.getName();
         this.id = country.getId();
-        this.states = country.getStates().stream().map(s -> new CountryStateResponse(s)).collect(Collectors.toList());
+        if(country.getStates()!=null && country.getStates().size()>0) this.states = country.getStates().stream().map(s -> new CountryStateResponse(s)).collect(Collectors.toList());
     }
 
     public String getName() {
