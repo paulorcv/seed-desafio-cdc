@@ -1,5 +1,7 @@
 package br.com.epermatozoideguerreiro.cdc.purchase;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,6 +28,10 @@ public class ItemOrder {
     @Positive    
     private Integer quantity;
 
+    @NotNull
+    @Positive
+    private BigDecimal price;    
+
     public Integer getQuantity() {
         return quantity;
     }
@@ -42,16 +48,24 @@ public class ItemOrder {
     public void setBook(Book book) {
         this.book = book;
     }
-    @Override
-    public String toString() {
-        return "ItemOrder [id=" + id + ", book=" + book + ", quantity=" + quantity + "]";
-    }
 
     public ItemOrder() {
     }
-    public ItemOrder(@NotNull Book book, @NotNull @Positive Integer quantity) {
+    
+    public ItemOrder(@NotNull Book book, @NotNull @Positive Integer quantity, @NotNull @Positive BigDecimal price) {
         this.book = book;
         this.quantity = quantity;
+        this.price = price;
+    }
+    public BigDecimal getPrice() {
+        return price;
+    }
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+    @Override
+    public String toString() {
+        return "ItemOrder [id=" + id + ", book=" + book + ", quantity=" + quantity + ", price=" + price + "]";
     }    
 
     

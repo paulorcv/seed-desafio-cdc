@@ -15,6 +15,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 import br.com.epermatozoideguerreiro.cdc.country.Country;
 import br.com.epermatozoideguerreiro.cdc.shared.Documento;
@@ -65,6 +66,7 @@ public class Purchase {
     private String cep;
 
     @NotNull
+    @Positive
     private BigDecimal total;
 
     @NotEmpty

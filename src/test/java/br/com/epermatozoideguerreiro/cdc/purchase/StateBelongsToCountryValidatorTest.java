@@ -90,7 +90,7 @@ public class StateBelongsToCountryValidatorTest {
     }
 
     private ItemOrderRequest newItemOrder() {
-        return new ItemOrderRequest(1L, 1);
+        return new ItemOrderRequest(1L, 1,  BigDecimal.valueOf(10));
     }
 
     private NewPurchaseRequest newPurchaseRequestWithoutState() {
