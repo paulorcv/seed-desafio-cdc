@@ -2,6 +2,7 @@ package br.com.epermatozoideguerreiro.cdc.purchase;
 
 import java.math.BigDecimal;
 
+import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
@@ -44,8 +45,8 @@ public class ItemOrderRequest {
         this.price = price;
     }
 
-    public ItemOrder toModel(BookRepository bookRepository) {
-        Book book = bookRepository.findById(idBook).get();
+    public ItemOrder toModel(EntityManager manager) {
+        Book book = manager.find(Book.class, idBook);
         return new ItemOrder(book, quantity, price);
     }
 

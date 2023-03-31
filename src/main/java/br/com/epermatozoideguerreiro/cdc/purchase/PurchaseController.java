@@ -1,35 +1,27 @@
 package br.com.epermatozoideguerreiro.cdc.purchase;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import br.com.epermatozoideguerreiro.cdc.book.BookRepository;
-import br.com.epermatozoideguerreiro.cdc.country.CountryRepository;
-import br.com.epermatozoideguerreiro.cdc.state.StateRepository;
 
 @RestController
 @Validated
 public class PurchaseController {
 
-    @Autowired
-    CountryRepository countryRepository;
-
-    @Autowired
-    StateRepository stateRepository;
-
-    @Autowired
-    PurchaseRepository purchaseRepository;
-
-    @Autowired
-    BookRepository bookRepository;
+    @PersistenceContext
+    EntityManager manager;
 
     @Autowired
     StateBelongsToCountryValidator stateBelongsToCountryValidator;
@@ -44,8 +36,14 @@ public class PurchaseController {
 
     @PostMapping(value = "/api/purchases")
     @Transactional
-    public void create(@Valid @RequestBody NewPurchaseRequest request) {
-        purchaseRepository.save(request.toModel(countryRepository, stateRepository, bookRepository));
+    @ResponseBody
+    public ResponseEntity<Purchase> create(@Valid @RequestBody NewPurchaseRequest request) {
+        Purchase purchase = request.toModel(manager);
+        manager.persist(purchase);
+        // return new ResponseEntity<>(purchase, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(purchase);
+
+
     }
 
 }

@@ -2,9 +2,9 @@ package br.com.epermatozoideguerreiro.cdc.purchase;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -14,12 +14,10 @@ import javax.validation.constraints.Positive;
 
 import org.springframework.util.Assert;
 
-import br.com.epermatozoideguerreiro.cdc.book.BookRepository;
 import br.com.epermatozoideguerreiro.cdc.country.Country;
-import br.com.epermatozoideguerreiro.cdc.country.CountryRepository;
+import br.com.epermatozoideguerreiro.cdc.coupon.Coupon;
 import br.com.epermatozoideguerreiro.cdc.shared.Documento;
 import br.com.epermatozoideguerreiro.cdc.state.State;
-import br.com.epermatozoideguerreiro.cdc.state.StateRepository;
 
 public class NewPurchaseRequest {
 
@@ -64,6 +62,8 @@ public class NewPurchaseRequest {
     @NotEmpty
     private List<@Valid ItemOrderRequest> itemsOrder;
 
+    private Long idCoupon;
+
     public NewPurchaseRequest() {
     }
 
@@ -86,27 +86,30 @@ public class NewPurchaseRequest {
         this.itemsOrder = itemsOrder;
     }
 
-    public Purchase toModel(CountryRepository countryRepository, StateRepository stateRepository,
-            BookRepository bookRepository) {
+    public Purchase toModel(EntityManager manager) {
 
-        @NotNull
-        Optional<Country> countryOptional = countryRepository.findById(idCountry);
-        Assert.state(countryOptional.isPresent(), "Não existe o país com o id: " + idCountry + " no banco");
+        Country country = manager.find(Country.class, idCountry);
+        Assert.state(country!=null, "Não existe o país com o id: " + idCountry + " no banco");
 
-        Country country = countryOptional.get();
         State state = null;
 
         if (country.hasStates()) {
-            Optional<State> stateOptional = stateRepository.findById(idState);
-            Assert.state(stateOptional.isPresent(), "Não existe estado  com o id: " + idState + " no banco");
-            state = stateOptional.get();
+            state = manager.find(State.class, idState);
+            Assert.state(state!=null, "Não existe estado  com o id: " + idState + " no banco");
         }
 
         List<ItemOrder> itemsOrderModel = null;
 
         if (!itemsOrder.isEmpty()) {
-            itemsOrderModel = itemsOrder.stream().map(item -> item.toModel(bookRepository))
+            itemsOrderModel = itemsOrder.stream().map(item -> item.toModel(manager))
                     .collect(Collectors.toList());
+        }
+
+        Coupon coupon = null;
+
+        if(idCoupon!=null) {
+            coupon = manager.find(Coupon.class, idCoupon);
+            Assert.state(coupon!=null, "Não existe cupom  com o id: " + idCoupon + " no banco");
         }
 
         return new Purchase(
@@ -122,7 +125,8 @@ public class NewPurchaseRequest {
                 phoneNumber,
                 cep,
                 total,
-                itemsOrderModel);
+                itemsOrderModel,
+                coupon);
 
     }
 
@@ -230,4 +234,13 @@ public class NewPurchaseRequest {
         this.itemsOrder = itemsOrder;
     }
 
+    public Long getIdCoupon() {
+        return idCoupon;
+    }
+
+    public void setIdCoupon(Long idCoupon) {
+        this.idCoupon = idCoupon;
+    }
+
+    
 }

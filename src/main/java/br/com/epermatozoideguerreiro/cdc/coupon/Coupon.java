@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 @Entity
-class Coupon {
+public class Coupon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ class Coupon {
     private BigDecimal percentage;
     @NotNull
     @Future
-    private LocalDate validity;   
+    private LocalDate validity;
 
     public Coupon() {
     }
@@ -67,6 +67,16 @@ class Coupon {
         this.validity = validity;
     }
 
-    
+    public boolean isValid() {
+        return this.validity.isAfter(LocalDate.now());
+    }
+
+    public Coupon(Long id, @NotBlank String code, @NotNull @Positive @Max(100) BigDecimal percentage,
+            @NotNull @Future LocalDate validity) {
+        this.id = id;
+        this.code = code;
+        this.percentage = percentage;
+        this.validity = validity;
+    }
 
 }

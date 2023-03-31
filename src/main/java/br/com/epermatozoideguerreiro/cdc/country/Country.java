@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.epermatozoideguerreiro.cdc.state.State;
 
 @Entity
@@ -22,6 +24,7 @@ public class Country {
     @NotBlank
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
     private List<State> states;
 
