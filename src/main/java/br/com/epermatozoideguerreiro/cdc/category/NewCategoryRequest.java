@@ -2,8 +2,11 @@ package br.com.epermatozoideguerreiro.cdc.category;
 
 import javax.validation.constraints.NotBlank;
 
+import br.com.epermatozoideguerreiro.cdc.shared.UniqueValue;
+
 public class NewCategoryRequest {
     @NotBlank
+    @UniqueValue(domainClass = Category.class, fieldname = "name")
     private String name;
 
     public NewCategoryRequest() {

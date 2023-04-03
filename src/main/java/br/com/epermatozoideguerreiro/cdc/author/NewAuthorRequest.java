@@ -4,6 +4,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import br.com.epermatozoideguerreiro.cdc.shared.UniqueValue;
+
 public class NewAuthorRequest {
 
     @NotBlank
@@ -11,6 +13,7 @@ public class NewAuthorRequest {
 
     @NotBlank
     @Email
+    @UniqueValue(domainClass = Author.class, fieldname = "email")
     private String email;
 
     @NotBlank

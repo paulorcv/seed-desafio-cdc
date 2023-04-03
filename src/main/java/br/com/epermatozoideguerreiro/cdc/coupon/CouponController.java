@@ -18,14 +18,6 @@ public class CouponController {
     @Autowired
     CouponRepository couponRepository;
 
-    @Autowired
-    CouponValidator couponValidator;
-
-    @InitBinder
-    public void init(WebDataBinder binder) {
-        binder.addValidators(couponValidator);
-    }
-
     @PostMapping(value = "/api/coupons")
     @Transactional
     public ResponseEntity<Coupon> create(@RequestBody @Valid NewCouponRequest request) {

@@ -3,6 +3,8 @@ package br.com.epermatozoideguerreiro.cdc.author;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,13 +20,19 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.epermatozoideguerreiro.cdc.shared.UniqueValueValidator;
+
 @SpringBootTest(classes = AuthorController.class)
 @AutoConfigureMockMvc
 @EnableWebMvc
+// @ContextConfiguration(classes = {JpaConfig.class})
 public class AuthorControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @MockBean 
+    EntityManager manager;
 
     @Autowired
     private MockMvc mvc;
@@ -33,7 +41,7 @@ public class AuthorControllerTest {
     AuthorRepository authorRepository;
 
     @MockBean
-    AuthorAlreadyExistsValidator authorAlreadyExistsValidator;
+    UniqueValueValidator validator;
 
     @BeforeEach
     public void setup() {
@@ -45,7 +53,8 @@ public class AuthorControllerTest {
         Mockito.when(authorRepository.save(Mockito.any(Author.class)))
                 .thenReturn(author);
 
-        Mockito.when(authorAlreadyExistsValidator.supports(NewAuthorRequest.class)).thenReturn(true);
+        //Mockito.when(authorAlreadyExistsValidator.supports(NewAuthorRequest.class)).thenReturn(true);
+
     }
 
     @Test

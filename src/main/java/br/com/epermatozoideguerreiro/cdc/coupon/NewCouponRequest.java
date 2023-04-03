@@ -9,9 +9,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import br.com.epermatozoideguerreiro.cdc.shared.UniqueValue;
+
 public class NewCouponRequest {
 
     @NotBlank
+    @UniqueValue(domainClass = Coupon.class, fieldname = "code")
     private String code;
     @NotNull
     @Positive
