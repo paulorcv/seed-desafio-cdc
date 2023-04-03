@@ -12,11 +12,14 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+
+import org.springframework.util.Assert;
 
 import br.com.epermatozoideguerreiro.cdc.country.Country;
 import br.com.epermatozoideguerreiro.cdc.coupon.CouponApplied;
@@ -233,6 +236,8 @@ public class Purchase {
     }
 
     public void setCouponApplied(CouponApplied couponApplied) {
+        Assert.isNull(this.getCouponApplied(), "Tentando trocar o cupom de uma compra");
+
         this.couponApplied = couponApplied;
         this.applyDiscount();
     }
