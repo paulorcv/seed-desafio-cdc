@@ -3,22 +3,15 @@ package br.com.epermatozoideguerreiro.cdc.coupon;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.Embeddable;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-@Entity
-public class Coupon {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Embeddable
+public class CouponApplied {
 
     @NotBlank
     private String code;
@@ -30,17 +23,21 @@ public class Coupon {
     @Future
     private LocalDate validity;
 
-    public Coupon() {
+    public CouponApplied() {
     }
 
-    public Coupon(String code, BigDecimal percentage, LocalDate validity) {
+    public CouponApplied(String code, BigDecimal percentage, LocalDate validity) {
         this.code = code;
         this.percentage = percentage;
         this.validity = validity;
     }
 
-    public Long getId() {
-        return id;
+    public CouponApplied(Coupon coupon) {
+        if (coupon != null) {
+            this.code = coupon.getCode();
+            this.percentage = coupon.getPercentage();
+            this.validity = coupon.getValidity();
+        }
     }
 
     public String getCode() {

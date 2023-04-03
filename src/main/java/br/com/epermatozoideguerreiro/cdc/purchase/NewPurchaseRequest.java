@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.Embedded;
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -16,6 +17,8 @@ import org.springframework.util.Assert;
 
 import br.com.epermatozoideguerreiro.cdc.country.Country;
 import br.com.epermatozoideguerreiro.cdc.coupon.Coupon;
+import br.com.epermatozoideguerreiro.cdc.coupon.CouponApplied;
+import br.com.epermatozoideguerreiro.cdc.coupon.CouponRepository;
 import br.com.epermatozoideguerreiro.cdc.shared.Documento;
 import br.com.epermatozoideguerreiro.cdc.state.State;
 
@@ -62,7 +65,10 @@ public class NewPurchaseRequest {
     @NotEmpty
     private List<@Valid ItemOrderRequest> itemsOrder;
 
-    private Long idCoupon;
+    private String couponCode;
+
+    @Embedded
+    CouponApplied appliedCoupon;
 
     public NewPurchaseRequest() {
     }
@@ -86,16 +92,16 @@ public class NewPurchaseRequest {
         this.itemsOrder = itemsOrder;
     }
 
-    public Purchase toModel(EntityManager manager) {
+    public Purchase toModel(EntityManager manager, CouponRepository couponRepository) {
 
         Country country = manager.find(Country.class, idCountry);
-        Assert.state(country!=null, "Não existe o país com o id: " + idCountry + " no banco");
+        Assert.state(country != null, "Não existe o país com o id: " + idCountry + " no banco");
 
         State state = null;
 
         if (country.hasStates()) {
             state = manager.find(State.class, idState);
-            Assert.state(state!=null, "Não existe estado  com o id: " + idState + " no banco");
+            Assert.state(state != null, "Não existe estado  com o id: " + idState + " no banco");
         }
 
         List<ItemOrder> itemsOrderModel = null;
@@ -107,12 +113,15 @@ public class NewPurchaseRequest {
 
         Coupon coupon = null;
 
-        if(idCoupon!=null) {
-            coupon = manager.find(Coupon.class, idCoupon);
-            Assert.state(coupon!=null, "Não existe cupom  com o id: " + idCoupon + " no banco");
+        if (couponCode != null && !couponCode.equals("")) {
+            coupon = couponRepository.findByCode(couponCode).get();
+            Assert.state(coupon != null, "Não existe cupom  com o código: " + couponCode + " no banco");
         }
 
-        return new Purchase(
+        CouponApplied couponApplied = new CouponApplied(coupon);
+
+
+        Purchase purchase = new Purchase(
                 email,
                 name,
                 lastName,
@@ -125,8 +134,10 @@ public class NewPurchaseRequest {
                 phoneNumber,
                 cep,
                 total,
-                itemsOrderModel,
-                coupon);
+                itemsOrderModel);
+        purchase.setCouponApplied(couponApplied);
+
+        return purchase;
 
     }
 
@@ -234,13 +245,13 @@ public class NewPurchaseRequest {
         this.itemsOrder = itemsOrder;
     }
 
-    public Long getIdCoupon() {
-        return idCoupon;
+    public String getCouponCode() {
+        return couponCode;
     }
 
-    public void setIdCoupon(Long idCoupon) {
-        this.idCoupon = idCoupon;
+    public void setCouponCode(String couponCode) {
+        this.couponCode = couponCode;
     }
 
-    
+
 }

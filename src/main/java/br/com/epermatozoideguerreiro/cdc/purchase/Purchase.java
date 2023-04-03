@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,7 +19,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import br.com.epermatozoideguerreiro.cdc.country.Country;
-import br.com.epermatozoideguerreiro.cdc.coupon.Coupon;
+import br.com.epermatozoideguerreiro.cdc.coupon.CouponApplied;
 import br.com.epermatozoideguerreiro.cdc.shared.Documento;
 import br.com.epermatozoideguerreiro.cdc.state.State;
 
@@ -75,8 +76,8 @@ public class Purchase {
     @OneToMany(cascade = CascadeType.ALL)
     private List<@Valid ItemOrder> itemsOrder;
 
-    @ManyToOne
-    private Coupon coupon;
+    @Embedded
+    private CouponApplied couponApplied;
 
     public Purchase() {
     }
@@ -84,8 +85,7 @@ public class Purchase {
     public Purchase(@NotBlank @Email String email, @NotBlank String name, @NotBlank String lastName,
             @NotBlank @Documento String document, @NotBlank String address, @NotBlank String complement,
             @NotBlank String city, @NotNull Country country, State state, @NotBlank String phoneNumber,
-            @NotBlank String cep, @NotNull @Positive BigDecimal total, @NotEmpty List<@Valid ItemOrder> itemsOrder,
-            Coupon coupon) {
+            @NotBlank String cep, @NotNull @Positive BigDecimal total, @NotEmpty List<@Valid ItemOrder> itemsOrder) {
         this.email = email;
         this.name = name;
         this.lastName = lastName;
@@ -99,15 +99,13 @@ public class Purchase {
         this.cep = cep;
         this.total = total;
         this.itemsOrder = itemsOrder;
-        this.coupon = coupon;
-        this.applyDiscount();
 
     }
 
     private void applyDiscount() {
         BigDecimal discount = BigDecimal.ZERO;
-        if (this.coupon != null) {
-            discount = this.getTotal().multiply(coupon.getPercentage()).divide(BigDecimal.valueOf(100));
+        if (this.couponApplied != null) {
+            discount = this.getTotal().multiply(couponApplied.getPercentage()).divide(BigDecimal.valueOf(100));
         }
         this.totalWithDiscounts = this.getTotal().subtract(discount);
     }
@@ -220,14 +218,6 @@ public class Purchase {
         this.itemsOrder = itemsOrder;
     }
 
-    public Coupon getCoupon() {
-        return coupon;
-    }
-
-    public void setCoupon(Coupon coupon) {
-        this.coupon = coupon;
-    }
-
     public BigDecimal getTotalWithDiscounts() {
         return totalWithDiscounts;
     }
@@ -236,11 +226,21 @@ public class Purchase {
         this.applyDiscount();
     }
 
+    
+
+    public CouponApplied getCouponApplied() {
+        return couponApplied;
+    }
+
+    public void setCouponApplied(CouponApplied couponApplied) {
+        this.couponApplied = couponApplied;
+        this.applyDiscount();
+    }
+
     public Purchase(Long id, @NotBlank @Email String email, @NotBlank String name, @NotBlank String lastName,
             @NotBlank @Documento String document, @NotBlank String address, @NotBlank String complement,
             @NotBlank String city, @NotNull Country country, State state, @NotBlank String phoneNumber,
-            @NotBlank String cep, @NotNull @Positive BigDecimal total, @NotEmpty List<@Valid ItemOrder> itemsOrder,
-            Coupon coupon) {
+            @NotBlank String cep, @NotNull @Positive BigDecimal total, @NotEmpty List<@Valid ItemOrder> itemsOrder) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -254,8 +254,7 @@ public class Purchase {
         this.phoneNumber = phoneNumber;
         this.cep = cep;
         this.total = total;
-        this.itemsOrder = itemsOrder;
-        this.coupon = coupon;
+        this.itemsOrder = itemsOrder;    
     }
 
 }

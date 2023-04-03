@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.epermatozoideguerreiro.cdc.coupon.CouponRepository;
+
 @RestController
 @Validated
 public class PurchaseController {
@@ -29,6 +31,9 @@ public class PurchaseController {
     @Autowired
     ItemsOrderValidator itemsOrderValidator;
 
+    @Autowired 
+    CouponRepository couponRepository;
+
     @InitBinder
     public void init(WebDataBinder binder) {
         binder.addValidators(stateBelongsToCountryValidator, itemsOrderValidator);
@@ -38,12 +43,9 @@ public class PurchaseController {
     @Transactional
     @ResponseBody
     public ResponseEntity<Purchase> create(@Valid @RequestBody NewPurchaseRequest request) {
-        Purchase purchase = request.toModel(manager);
+        Purchase purchase = request.toModel(manager, couponRepository);
         manager.persist(purchase);
-        // return new ResponseEntity<>(purchase, HttpStatus.CREATED);
         return ResponseEntity.status(HttpStatus.CREATED).body(purchase);
-
-
     }
 
 }
