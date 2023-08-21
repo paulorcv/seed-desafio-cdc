@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -25,12 +24,13 @@ public class BookController {
     @Autowired
     private BookRepository bookRepository;
 
-    @PersistenceContext
+    @Autowired
     EntityManager manager;
 
     @PostMapping(value = "/api/book")
     @Transactional
     public void create(@Valid @RequestBody NewBookRequest request) {
+        System.out.println("TESTE PASSEI POR AQUI");
         manager.persist(request.toModel(manager));
     }
 

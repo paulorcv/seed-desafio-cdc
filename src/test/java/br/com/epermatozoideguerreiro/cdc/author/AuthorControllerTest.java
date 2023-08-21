@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,8 @@ public class AuthorControllerTest {
         Mockito.when(authorRepository.save(Mockito.any(Author.class)))
                 .thenReturn(author);
 
-        //Mockito.when(authorAlreadyExistsValidator.supports(NewAuthorRequest.class)).thenReturn(true);
+        Mockito.when(manager.createQuery(Mockito.anyString())).thenReturn(Mockito.mock(Query.class));
+
 
     }
 

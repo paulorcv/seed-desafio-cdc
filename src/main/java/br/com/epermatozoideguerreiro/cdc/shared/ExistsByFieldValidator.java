@@ -3,7 +3,6 @@ package br.com.epermatozoideguerreiro.cdc.shared;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -16,7 +15,6 @@ public class ExistsByFieldValidator implements ConstraintValidator<ExistsByField
     private String domainAttribute;
     private Class<?> klass;
 
-    @PersistenceContext
     @Autowired
     private EntityManager manager;
 

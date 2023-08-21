@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -46,6 +49,10 @@ class CountryControllerTest {
     @MockBean
     CountryAlreadyExistsValidator countryAlreadyExistsValidator;
 
+    @MockBean
+    EntityManager manager;
+
+
     @BeforeEach
     public void setup() {
 
@@ -56,6 +63,9 @@ class CountryControllerTest {
                 .thenReturn(country);
 
         Mockito.when(countryAlreadyExistsValidator.supports(NewCountryRequest.class)).thenReturn(true);
+
+        Mockito.when(manager.createQuery(Mockito.anyString())).thenReturn(Mockito.mock(Query.class));
+
     }
 
     @Test

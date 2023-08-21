@@ -2,8 +2,11 @@ package br.com.epermatozoideguerreiro.cdc.category;
 
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.stereotype.Component;
+
 import br.com.epermatozoideguerreiro.cdc.shared.UniqueValue;
 
+@Component
 public class NewCategoryRequest {
     @NotBlank
     @UniqueValue(domainClass = Category.class, fieldname = "name")

@@ -3,7 +3,6 @@ package br.com.epermatozoideguerreiro.cdc.purchase;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -26,7 +25,7 @@ import br.com.epermatozoideguerreiro.cdc.coupon.CouponRepository;
 @Validated
 public class PurchaseController {
 
-    @PersistenceContext
+    @Autowired
     EntityManager manager;
 
     @Autowired

@@ -1,5 +1,5 @@
 package br.com.epermatozoideguerreiro.cdc.book;
-
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,21 +60,28 @@ class BookControllerTest {
     @MockBean
     BookAlreadyExistsValidator bookAlreadyExistsValidator;
 
+    @MockBean
+    EntityManager manager;
+
+    private Long idCategory = 1L;
+
+    private Long idAuthor = 1L;
+
     @BeforeEach
     public void setup() {
 
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        Author author = newAuthor();
-        Category category = newCategory();
-        Book book = newBook(author, category);
 
-        Mockito.when(bookRepository.save(Mockito.any(Book.class)))
-                .thenReturn(book);
+        when(bookAlreadyExistsValidator.supports(NewBookRequest.class)).thenReturn(true);
 
-        Mockito.when(authorRepository.findById(Mockito.any())).thenReturn(Optional.of(newAuthor()));
-        Mockito.when(categoryRepository.findById(Mockito.any())).thenReturn(Optional.of(newCategory()));
+        when(manager.createQuery(Mockito.anyString())).thenReturn(Mockito.mock(Query.class));
 
-        Mockito.when(bookAlreadyExistsValidator.supports(NewBookRequest.class)).thenReturn(true);
+        when(manager.find(Category.class, idCategory)).thenReturn(newCategory());
+
+        when(manager.find(Author.class, idAuthor)).thenReturn(newAuthor());
+
+        doNothing().when(manager).persist(Mockito.any());
+
     }
 
     @Test
@@ -217,22 +227,22 @@ class BookControllerTest {
 
     private NewBookRequest newBookRequest() {
         return new NewBookRequest("titulo", "descrição", "sumário", new BigDecimal(21), 110, "2321",
-                LocalDate.of(2100, 10, 10), 12L, 12L);
+                LocalDate.of(2100, 10, 10), idAuthor, idCategory);
     }
 
     private NewBookRequest newBookInvalidPagesRequest() {
         return new NewBookRequest("titulo", "descrição", "sumário", new BigDecimal(21), 19, "2321",
-                LocalDate.of(2100, 10, 10), 12L, 12L);
+                LocalDate.of(2100, 10, 10), idAuthor, idCategory);
     }
 
     private NewBookRequest newBookInvalidTitleRequest() {
         return new NewBookRequest("", "descrição", "sumário", new BigDecimal(21), 19, "2321",
-                LocalDate.of(2100, 10, 10), 12L, 12L);
+                LocalDate.of(2100, 10, 10), idAuthor, idCategory);
     }
 
     private NewBookRequest newBookInvalidPublicationDateRequest() {
         return new NewBookRequest("", "descrição", "sumário", new BigDecimal(21), 19, "2321",
-                LocalDate.of(2020, 10, 10), 12L, 12L);
+                LocalDate.of(2020, 10, 10), idAuthor, idCategory);
     }
 
 }

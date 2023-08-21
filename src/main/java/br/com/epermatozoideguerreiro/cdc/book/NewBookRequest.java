@@ -2,7 +2,6 @@ package br.com.epermatozoideguerreiro.cdc.book;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.validation.constraints.Future;
@@ -17,9 +16,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 import br.com.epermatozoideguerreiro.cdc.author.Author;
-import br.com.epermatozoideguerreiro.cdc.author.AuthorRepository;
 import br.com.epermatozoideguerreiro.cdc.category.Category;
-import br.com.epermatozoideguerreiro.cdc.category.CategoryRepository;
 import br.com.epermatozoideguerreiro.cdc.shared.ExistsByField;
 import br.com.epermatozoideguerreiro.cdc.shared.UniqueValue;
 
