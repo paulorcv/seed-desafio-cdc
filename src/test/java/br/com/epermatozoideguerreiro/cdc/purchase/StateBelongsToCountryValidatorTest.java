@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
@@ -25,6 +26,7 @@ import br.com.epermatozoideguerreiro.cdc.state.State;
 import br.com.epermatozoideguerreiro.cdc.state.StateRepository;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class StateBelongsToCountryValidatorTest {
 
     @Autowired

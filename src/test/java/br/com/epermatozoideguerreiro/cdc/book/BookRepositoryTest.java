@@ -10,11 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import br.com.epermatozoideguerreiro.cdc.author.Author;
 import br.com.epermatozoideguerreiro.cdc.category.Category;
 
 @SpringBootTest(classes = BookRepository.class)
+@ActiveProfiles("test")
 public class BookRepositoryTest {
 
     @MockBean

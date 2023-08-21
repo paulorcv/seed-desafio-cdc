@@ -50,11 +50,11 @@ public class NewBookRequest {
     private LocalDate publicationDate;
 
     @NotNull
-    @ExistsByField(domainClass = Author.class, fieldname = "id")
+    // @ExistsByField(domainClass = Author.class, fieldname = "id")
     private Long idAuthor;
 
     @NotNull
-    @ExistsByField(domainClass = Category.class, fieldname = "id")
+    // @ExistsByField(domainClass = Category.class, fieldname = "id")
     private Long idCategory;
 
     public NewBookRequest() {
