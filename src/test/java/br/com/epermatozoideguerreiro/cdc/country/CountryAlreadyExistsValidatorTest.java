@@ -2,8 +2,12 @@ package br.com.epermatozoideguerreiro.cdc.country;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +27,9 @@ public class CountryAlreadyExistsValidatorTest {
     @MockBean
     private CountryRepository repository;
 
+    @MockBean
+    private EntityManager manager;
+
     Errors errors;
 
     Optional<Country> country;
@@ -30,6 +37,9 @@ public class CountryAlreadyExistsValidatorTest {
     @BeforeEach
     public void setup() {
         country = Optional.of(newCountry());
+
+        when(manager.createQuery(Mockito.anyString())).thenReturn(Mockito.mock(Query.class));
+
     }
     @Test
     public void duplicateCountry() throws Exception {
